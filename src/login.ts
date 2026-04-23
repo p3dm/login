@@ -27,44 +27,51 @@ function buildCookies(
     `refresh_token=${refreshToken}; HttpOnly; Path=/; Max-Age=604800; SameSite=Strict${secure}`,
   ];
 }
-// ---signup---------------------------------------------------------------------
+// ---signup-------------------------------------------------------------------------------------
 export async function signUp(
   email: string,
   password: string,
   full_name: string,
   age: number,
-): Promise<{ cookies: string[]; user: SafeUser }> {
-  // Kiểm tra email đã tồn tại chưa (không dùng .single() để tránh lỗi khi không tìm thấy)
-  const { data: existingUsers, error: checkError } = await supabase
-    .from("users")
-    .select("*")
-    .eq("email", email);
-
-  if (checkError) throw new Error(`Lỗi kiểm tra email: ${checkError.message}`);
-  if (existingUsers && existingUsers.length > 0)
-    throw new Error("Email đã được sử dụng");
-
-  const { data, error } = await supabase.auth.signUp({ email, password });
+): Promise<{ cookies: string[]; user: SafeUser | null; message?: string }> {
+  // Gửi full_name và age vào metadata → trigger DB sẽ tự insert vào bảng users
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      data: { full_name, age }, // raw_user_meta_data trong auth.users
+    },
+  });
   if (error) throw new Error(`Đăng ký thất bại: ${error.message}`);
 
   const { session } = data;
-  if (!session) throw new Error("Vui lòng xác nhận email trước khi đăng nhập");
 
-  const { data: newUser, error: insertErr } = await supabase
-    .from("users")
-    .insert({ email, full_name, age })
-    .select()
-    .single<SafeUser>();
-  if (insertErr || !newUser) throw new Error("Không thể tạo hồ sơ người dùng");
+  // Email confirmation bật → session = null, trigger đã tạo profile, chờ user xác nhận
+  if (!session) {
+    return {
+      cookies: [],
+      user: null,
+      message: "Vui lòng kiểm tra email để xác nhận tài khoản",
+    };
+  }
 
-  const { password_hash, ...safeFields } = newUser as any;
-  const safeUser: SafeUser = { ...safeFields };
-
+  // Email confirmation tắt → đăng nhập ngay
   const cookies = buildCookies(
     session.access_token,
     session.refresh_token,
     session.expires_in,
   );
+
+  const safeUser: SafeUser = {
+    user_id: data.user!.id as any,
+    email: data.user!.email!,
+    full_name,
+    age,
+    created_at: data.user!.created_at,
+    job_field: null,
+    avatar_url: null,
+    roles: null,
+  };
 
   return { cookies, user: safeUser };
 }
