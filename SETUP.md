@@ -124,7 +124,6 @@ Server chạy tại `http://localhost:3000`
 | POST   | `/login`  | Đăng nhập                    | Không        |
 | POST   | `/logout` | Đăng xuất                    | Không        |
 | GET    | `/me`     | Lấy thông tin user hiện tại  | Cookie       |
-
 ### POST `/signUp`
 ```json
 // Request Body
@@ -133,7 +132,7 @@ Server chạy tại `http://localhost:3000`
   "password": "matkhau123",
   "full_name": "Nguyen Van A",
   "age": 25
-}
+} 
 
 // Response 200 — email confirmation TẮT
 {
