@@ -1,5 +1,5 @@
-import { supabase } from "./db";
-import { SafeUser } from "./User";
+import { supabase } from "./db/db";
+import { SafeUser } from "./db/User";
 
 // ─── Helper: parse cookies from request header ────────────────────────────────
 export function parseCookies(
@@ -61,7 +61,8 @@ export async function signUp(
     return {
       cookies: [],
       user: null,
-      message: "Đăng ký thành công! Vui lòng kiểm tra email để xác nhận tài khoản.",
+      message:
+        "Đăng ký thành công! Vui lòng kiểm tra email để xác nhận tài khoản.",
     };
   }
 
@@ -72,14 +73,13 @@ export async function signUp(
     session.expires_in,
   );
 
-  const { password_hash, ...safeFields } = (await supabase
-    .from("users")
-    .select("*")
-    .eq("email", email)
-    .single()).data ?? {};
+  const { password_hash, ...safeFields } =
+    (await supabase.from("users").select("*").eq("email", email).single())
+      .data ?? {};
 
   const safeUser: SafeUser = {
-    user_id: safeFields.user_id ?? data.user!.id,
+    user_id: data.user!.id,
+    id: safeFields.id,
     email: data.user!.email!,
     full_name,
     age,
@@ -249,7 +249,6 @@ export async function changePassword(
   old_password: string,
   new_password: string,
 ): Promise<{ message: string }> {
-  // Bước 1: Verify mật khẩu cũ bằng cách đăng nhập lại
   const { error: verifyErr } = await supabase.auth.signInWithPassword({
     email,
     password: old_password,
@@ -289,3 +288,168 @@ export async function getSessionUser(
   const { password_hash, ...safeFields } = userRow;
   return { ...safeFields, roles };
 }
+
+// ─── Các role user được phép tự đăng ký ──────────────────────────────────────
+// Chỉ 'A' (Advertiser) và 'B' (Publisher) — KHÔNG cho phép tự gán 'admin'
+const SELF_ASSIGNABLE_ROLES = ["A", "B"] as const;
+export type SelfAssignableRole = (typeof SELF_ASSIGNABLE_ROLES)[number];
+
+// ─── Tự đăng ký role A hoặc B (không cần admin) ──────────────────────────────
+export async function selfAssignRole(
+  accessToken: string,
+  roleName: SelfAssignableRole,
+): Promise<{ message: string; roles: string[] }> {
+  // 1. Validate: chỉ cho phép A hoặc B
+  if (!SELF_ASSIGNABLE_ROLES.includes(roleName))
+    throw new Error(
+      `Chỉ được đăng ký role 'A' (Advertiser) hoặc 'B' (Publisher)`,
+    );
+
+  // 2. Xác minh user từ token
+  const user = await getSessionUser(accessToken);
+  if (!user) throw new Error("Token không hợp lệ hoặc đã hết hạn");
+
+  // 3. Tìm role_id từ role_name
+  const { data: roleRow, error: roleErr } = await supabase
+    .from("roles")
+    .select("role_id")
+    .eq("role_name", roleName)
+    .single();
+
+  if (roleErr || !roleRow)
+    throw new Error(
+      `Role '${roleName}' chưa được tạo trong DB. Chạy SQL seed trước.`,
+    );
+
+  // 4. Gán role (upsert — không lỗi nếu đã có)
+  const { error: insertErr } = await supabase
+    .from("user_roles")
+    .upsert(
+      { user_id: user.user_id, role_id: roleRow.role_id },
+      { onConflict: "user_id,role_id" },
+    );
+
+  if (insertErr) throw new Error(`Đăng ký role thất bại: ${insertErr.message}`);
+
+  // 5. Trả về danh sách role hiện tại
+  const updatedRoles = await getRolesByEmail(user.email);
+  return {
+    message: `Đã đăng ký role '${roleName}' thành công`,
+    roles: updatedRoles,
+  };
+}
+
+// ─── Lấy roles của user theo email ───────────────────────────────────────────
+export async function getRolesByEmail(email: string): Promise<string[]> {
+  // 1. Tìm user_id từ email
+  const { data: userRow, error: userErr } = await supabase
+    .from("users")
+    .select("user_id")
+    .eq("email", email)
+    .single();
+
+  if (userErr || !userRow) throw new Error("Không tìm thấy user");
+
+  // 2. Lấy danh sách roles qua bảng user_roles (join roles)
+  const { data: roleRows, error: roleErr } = await supabase
+    .from("user_roles")
+    .select("roles(role_name)")
+    .eq("user_id", userRow.user_id);
+
+  if (roleErr) throw new Error(`Lấy role thất bại: ${roleErr.message}`);
+
+  return (roleRows ?? [])
+    .map((r: any) => r.roles?.role_name ?? "")
+    .filter(Boolean);
+}
+
+// ─── Gán role cho user (CHỈ admin mới được gọi) ──────────────────────────────
+// adminToken: access_token của người thực hiện hành động (phải là admin)
+// targetEmail: email của user cần gán role
+// roleName: tên role cần gán ('user', 'marketer', 'admin', ...)
+// export async function assignRole(
+//   adminToken: string,
+//   targetEmail: string,
+//   roleName: string,
+// ): Promise<{ message: string }> {
+//   // 1. Xác minh người gọi là admin
+//   const admin = await getSessionUser(adminToken);
+//   if (!admin) throw new Error("Token không hợp lệ");
+
+//   const isAdmin = (admin.roles ?? []).includes("admin");
+//   if (!isAdmin) throw new Error("Không có quyền thực hiện thao tác này");
+
+//   // 2. Tìm role_id từ role_name
+//   const { data: roleRow, error: roleErr } = await supabase
+//     .from("roles")
+//     .select("role_id")
+//     .eq("role_name", roleName)
+//     .single();
+
+//   if (roleErr || !roleRow)
+//     throw new Error(`Role "${roleName}" không tồn tại trong hệ thống`);
+
+//   // 3. Tìm user_id của target
+//   const { data: targetUser, error: targetErr } = await supabase
+//     .from("users")
+//     .select("user_id")
+//     .eq("email", targetEmail)
+//     .single();
+
+//   if (targetErr || !targetUser)
+//     throw new Error(`Không tìm thấy user với email: ${targetEmail}`);
+
+//   // 4. Gán role (ON CONFLICT DO NOTHING — tránh duplicate)
+//   const { error: insertErr } = await supabase.from("user_roles").upsert(
+//     { user_id: targetUser.user_id, role_id: roleRow.role_id },
+//     { onConflict: "user_id,role_id" },
+//   );
+
+//   if (insertErr) throw new Error(`Gán role thất bại: ${insertErr.message}`);
+
+//   return { message: `Đã gán role "${roleName}" cho ${targetEmail}` };
+// }
+
+// // ─── Thu hồi role của user (CHỈ admin mới được gọi) ─────────────────────────
+// export async function revokeRole(
+//   adminToken: string,
+//   targetEmail: string,
+//   roleName: string,
+// ): Promise<{ message: string }> {
+//   // 1. Xác minh admin
+//   const admin = await getSessionUser(adminToken);
+//   if (!admin) throw new Error("Token không hợp lệ");
+//   if (!(admin.roles ?? []).includes("admin"))
+//     throw new Error("Không có quyền thực hiện thao tác này");
+
+//   // 2. Tìm role_id
+//   const { data: roleRow } = await supabase
+//     .from("roles")
+//     .select("role_id")
+//     .eq("role_name", roleName)
+//     .single();
+
+//   if (!roleRow)
+//     throw new Error(`Role "${roleName}" không tồn tại`);
+
+//   // 3. Tìm user_id
+//   const { data: targetUser } = await supabase
+//     .from("users")
+//     .select("user_id")
+//     .eq("email", targetEmail)
+//     .single();
+
+//   if (!targetUser)
+//     throw new Error(`Không tìm thấy user: ${targetEmail}`);
+
+//   // 4. Xoá role
+//   const { error } = await supabase
+//     .from("user_roles")
+//     .delete()
+//     .eq("user_id", targetUser.user_id)
+//     .eq("role_id", roleRow.role_id);
+
+//   if (error) throw new Error(`Thu hồi role thất bại: ${error.message}`);
+
+//   return { message: `Đã thu hồi role "${roleName}" của ${targetEmail}` };
+// }
