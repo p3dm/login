@@ -5,7 +5,8 @@
   "main": "src/main.js",
   "scripts": {
     "start": "tsx src/main.ts",
-    "dev": "tsx watch src/main.ts",
+    "dev": "nodemon",
+    "dev:debug": "nodemon --exec 'tsx --inspect src/main.ts'",
     "build": "tsc",
     "start:prod": "node dist/main.js",
     "test": "echo \"No tests yet\" && exit 0"
@@ -18,13 +19,17 @@
     "@nestjs/core": "^11.1.19",
     "@nestjs/platform-express": "^11.1.19",
     "@supabase/supabase-js": "^2.104.0",
+    "cookie-parser": "^1.4.7",
     "dotenv": "^17.4.2",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.10",
+    "@types/express": "^5.0.6",
     "@types/node": "^25.6.0",
+    "hot-hook": "^1.0.0",
+    "nodemon": "^3.1.14",
     "ts-node": "^10.9.2",
     "tsx": "^4.21.0",
     "typescript": "^6.0.3"
