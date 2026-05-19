@@ -59,17 +59,45 @@ export class taskController {
         if (data == null || error != null) throw new Error("Không có task");
     }
 
-    //     @Post("task")
-    //     @HttpCode(HttpStatus.OK)
-    //     async submitTask(@Req() req: Request, @Param() guid: string) {
-    //         const token = req.cookies["access_token"];
-    //         if (!token) throw new UnauthorizedException("Chưa đăng nhập");
+    @Post("task/submit/:guid")
+    @HttpCode(HttpStatus.OK)
+    async submitTask(@Req() req: Request, @Param() guid: string) {
+        const token = req.cookies["access_token"];
+        if (!token) throw new UnauthorizedException("Chưa đăng nhập");
+        const user = await this.getSessionUser(token);
+        if (!user) throw new UnauthorizedException("Phiên đăng nhập không hợp lệ!");
 
-    //         const user = await this.getSessionUser(token);
-    //         if (!user) throw new UnauthorizedException("Phiên đăng nhập không hợp lệ!");
+        const { data, error } = await supabase
+            .from("task")
+            .update({ status: "SUCCESS", submit_at: new Date().toISOString() })
+            .eq("guid", guid)
+            .select();
 
-    //         const { data, error } = await supabase
-    //             .from("task")
-    //             .
-    //     }
+        if (data == null || error != null) throw new Error("Không có task");
+    }
+
+    @Post("task/create")
+    @HttpCode(HttpStatus.OK)
+    async createTask(@Req() req: Request, @Body() body: any) {
+        const token = req.cookies["access_token"];
+        if (!token) throw new UnauthorizedException("Chưa đăng nhập");
+
+        const user = await this.getSessionUser(token);
+        if (!user) throw new UnauthorizedException("Phiên đăng nhập không hợp lệ");
+        if (!user.roles?.includes("A")) throw new Error("Không có quyền");
+
+        const { campain_id, description } = body;
+
+        const { data, error } = await supabase
+            .from("task")
+            .insert({
+                campain_id,
+                description,
+                created_at: new Date(),
+                status: "PENDING",
+            })
+            .select();
+
+        if (data == null || error != null) throw new Error("Không có task");
+    }
 }
