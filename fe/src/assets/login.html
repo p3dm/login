@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>D1A Agency | Access Terminal</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700;800;900&amp;family=Space+Grotesk:wght@300;400;500;700&amp;family=Manrope:wght@300;400;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container": "#201f20",
+                        "secondary-fixed-dim": "#8fd79d",
+                        "surface": "#131314",
+                        "primary-fixed-dim": "#2fe378",
+                        "on-error": "#690005",
+                        "error": "#ffb4ab",
+                        "on-tertiary-fixed-variant": "#763213",
+                        "on-surface-variant": "#bbcbba",
+                        "on-secondary-container": "#82c88f",
+                        "surface-container-low": "#1c1b1c",
+                        "on-secondary-fixed": "#00210b",
+                        "secondary-fixed": "#abf3b7",
+                        "primary": "#42ef83",
+                        "on-secondary-fixed-variant": "#025226",
+                        "on-error-container": "#ffdad6",
+                        "on-primary-fixed": "#00210b",
+                        "primary-container": "#00d26a",
+                        "on-background": "#e5e2e3",
+                        "inverse-on-surface": "#313031",
+                        "outline": "#859585",
+                        "outline-variant": "#3c4a3d",
+                        "surface-container-highest": "#353436",
+                        "secondary": "#8fd79d",
+                        "error-container": "#93000a",
+                        "secondary-container": "#065528",
+                        "inverse-surface": "#e5e2e3",
+                        "on-surface": "#e5e2e3",
+                        "surface-bright": "#3a393a",
+                        "background": "#131314",
+                        "on-primary-fixed-variant": "#005226",
+                        "surface-variant": "#353436",
+                        "on-secondary": "#003918",
+                        "tertiary-fixed-dim": "#ffb598",
+                        "on-primary": "#003918",
+                        "primary-fixed": "#62ff95",
+                        "tertiary-container": "#ff9e76",
+                        "on-tertiary-container": "#783314",
+                        "on-primary-container": "#005426",
+                        "tertiary": "#ffc5af",
+                        "on-tertiary": "#591d00",
+                        "tertiary-fixed": "#ffdbce",
+                        "surface-container-lowest": "#0e0e0f",
+                        "surface-tint": "#2fe378",
+                        "inverse-primary": "#006d34",
+                        "surface-container-high": "#2a2a2b",
+                        "surface-dim": "#131314",
+                        "on-tertiary-fixed": "#370e00"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Montserrat"],
+                        "body": ["Manrope"],
+                        "label": ["Manrope"]
+                    }
+                },
+            }
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .glow-border:focus-within {
+            box-shadow: 0 0 15px rgba(66, 239, 131, 0.2);
+        }
+
+        .bg-mesh {
+            background-image:
+                radial-gradient(at 0% 0%, rgba(66, 239, 131, 0.05) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(0, 210, 106, 0.05) 0px, transparent 50%);
+        }
+
+        .glass-panel {
+            background: rgba(32, 31, 32, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+    </style>
+</head>
+
+<body class="bg-surface font-body text-on-surface selection:bg-primary selection:text-on-primary">
+    <!-- Shell Suppression applied: No Navigation Shell for Transactional Auth Screen -->
+    <main class="min-h-screen flex items-center justify-center relative overflow-hidden bg-mesh p-6">
+        <!-- Abstract Background Pattern -->
+        <div class="absolute inset-0 pointer-events-none opacity-20">
+            <div
+                class="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]">
+            </div>
+            <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-primary-container/10 rounded-full blur-[120px]"></div>
+            <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary-container/10 rounded-full blur-[120px]">
+            </div>
+        </div>
+        <div
+            class="w-full max-w-[1200px] grid md:grid-cols-2 gap-0 overflow-hidden rounded-[2rem] shadow-2xl border border-outline-variant/10">
+            <!-- Left Side: Visual/Branding -->
+            <div class="hidden md:flex flex-col justify-between p-12 bg-surface-container-low relative">
+                <div class="z-10">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-primary flex items-center justify-center rounded-lg rotate-45">
+                            <span class="material-symbols-outlined text-on-primary -rotate-45"
+                                style="font-variation-settings: 'FILL' 1;">architecture</span>
+                        </div>
+                        <span class="font-headline font-black text-2xl tracking-tighter text-white">D1A AGENCY</span>
+                    </div>
+                </div>
+                <div class="z-10 space-y-6">
+                    <h1 class="font-headline font-black text-5xl leading-tight text-white uppercase italic">
+                        Architecting <span class="text-primary">Modern</span> Interfaces.
+                    </h1>
+                    <p class="font-body font-light text-on-surface-variant max-w-sm text-lg leading-relaxed">
+                        Access the precision console. Deploy high-fidelity campaign structures with algorithmic
+                        accuracy.
+                    </p>
+                </div>
+                <div class="z-10 flex items-center gap-4">
+                    <div class="flex -space-x-3">
+                        <img class="w-10 h-10 rounded-full border-2 border-surface-container-low"
+                            data-alt="professional portrait of a woman in minimalist tech attire with neutral lighting and clean composition"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDsFm8sQKIReLtRnm6DBsyz_kz1CKrVreyA55RwFUvdPxaWZRBLdtLB3y2xyi8DaYSv3dMrvwR7pphhq-fGN_UD1-f9fME1IXfSxIAetf5K7WMA0iMNEULIzF3a_lWUrQjOkt-oft5lzGNtRhDcG3fnBBW0TqA57odpRMJATnt51p4iXtxyqWWwRqdktLJlARZtrWr7na0VQvT1ZhN1kscWbIMGlaBS4XkTJMKmdQ7ZFGTdsUtyoT6081g5bMvZqBRXBj4EpZpKEgw" />
+                        <img class="w-10 h-10 rounded-full border-2 border-surface-container-low"
+                            data-alt="professional portrait of a man in dark clothing with professional studio lighting and dark background"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDuRrJkIEjdJ9TpLwtqKeyyxt-y5BLAb1hs2vbspYdldpHllIvJGJji0h2IDUuOoWWUNUg7E25p1kK49m52AfxCLd2iI7rz8BevHavneHTAef2cIqVf7hcqc63y-MRnGbRmo7a9Roy-utLxla_INzt135LYy9NnBbRQcGAFE38Q4riXwAP71jDFfVOxaZYB9L2HfWLkGuCTzsXfWZKf82K_s2JWx85b-16PAGi8JJQOxTrfOlxNPVJrH1w64I_2pKooutQ_VW14Gv0" />
+                        <img class="w-10 h-10 rounded-full border-2 border-surface-container-low"
+                            data-alt="close-up portrait of a woman laughing in soft focus professional setting with warm highlights"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBoDJUjaeK1dCOuoN_ZMjlXiacezMzbnsctI9CozDNBVLKuNuy9K0rGd8CAAvFFBXd2kWQPkAKA4iCr8KnNlhVG8uE8k6wh324gtLUqpBQxPESVFSiMwpRJ8hZ5oM_xsNzNXd-xyU1RbBVoKP-g1NOBadFTsIEqAVNanEFlSS5rkq9bCENDo3FPYg5cPfTTfE8qnm4-LILGtdBVRmv2FyLavynJgAQBLi7VELCsUXRmnyxPcUgjLIXdCdZlncSmPUzndEL5RtNTrHE" />
+                    </div>
+                    <span
+                        class="text-xs font-headline font-medium tracking-widest text-on-surface-variant uppercase">Joined
+                        by 2.4k+ Architects</span>
+                </div>
+                <!-- Abstract Decorative Image -->
+                <div class="absolute inset-0 z-0">
+                    <img class="w-full h-full object-cover mix-blend-overlay opacity-40"
+                        data-alt="abstract flowing dark liquid with neon green light reflections and deep shadows minimalist tech aesthetic"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuCoEtv1rWOO5etCIvbXknc_hTWKPrzo7JTddddh9Zdeo2U95wLbgse5NVI4sGQtaFB6c8SYTianfPUFl--Gt6U2xu5U8Q8W6J-Am06pKjwx1Spz9tJIP5-XTgOtUD265ML47_S9uzL-iJiI2fEOzRNjn23cdrS3VDzxlhuWoHT6gZwRN70BLNGIFkI_BxJQ4lUSIFPPD95MmkC9NnzypBuo4YYbZN-f7ntRekhedI5QXAQSUu0ROCI3j47JxlmURH5Vc5s3OuoLeDc" />
+                </div>
+            </div>
+            <!-- Right Side: Auth Form -->
+            <div class="glass-panel p-8 md:p-16 flex flex-col justify-center">
+                <div class="max-w-md mx-auto w-full space-y-10">
+                    <div class="space-y-2">
+                        <h2 class="font-headline font-extrabold text-3xl text-white">System Access</h2>
+                        <p class="font-body font-light text-on-surface-variant text-sm">Enter your credentials to enter
+                            the matrix.</p>
+                    </div>
+                    <!-- Social Login -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <button
+                            class="flex items-center justify-center gap-3 py-3 px-4 bg-surface-container-highest rounded-xl hover:bg-surface-bright transition-all duration-300 group">
+                            <img alt="Google" class="w-5 h-5 grayscale group-hover:grayscale-0 transition-all"
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuD4e7nvdq-suqb3Aw1B6ZQb2cWeRLbEz3lnqBV2Ns9vB-rBbutpcDqg5nfLtc80W7LUmB1N-u9rsoMASyOwOlNbTlxDtzaGsnEQoLdr5RLEUCNInQ2qiqWDnBNTnnnib4YCY6IYkUD3qS1EL3PHMhyxoMmlLCkZwjIL-17m3GWc0NKZwjd7LJc9lgdRL0PSyMkKM6ZD03LU7iAdbq6Yw2MkVBS34h2ArR-AAZMtdS7c04xpB6nrwQku-kWsqskdCt8iUSbvDDpGubA" />
+                            <span
+                                class="font-headline font-bold text-[10px] tracking-widest uppercase text-on-surface">Google</span>
+                        </button>
+                        <button
+                            class="flex items-center justify-center gap-3 py-3 px-4 bg-surface-container-highest rounded-xl hover:bg-surface-bright transition-all duration-300 group">
+                            <span class="material-symbols-outlined text-xl group-hover:text-primary transition-colors"
+                                style="font-variation-settings: 'FILL' 1;">ios</span>
+                            <span
+                                class="font-headline font-bold text-[10px] tracking-widest uppercase text-on-surface">Apple
+                                ID</span>
+                        </button>
+                    </div>
+                    <div class="relative flex items-center py-2">
+                        <div class="flex-grow border-t border-outline-variant/30"></div>
+                        <span
+                            class="flex-shrink mx-4 font-headline text-[10px] font-medium tracking-[0.2em] text-outline uppercase">Or
+                            continue with email</span>
+                        <div class="flex-grow border-t border-outline-variant/30"></div>
+                    </div>
+                    <!-- Form -->
+                    <form class="space-y-6">
+                        <div class="space-y-2">
+                            <label
+                                class="font-headline font-bold text-[10px] tracking-[0.15em] text-on-surface-variant uppercase ml-1">Terminal
+                                ID (Email)</label>
+                            <div class="relative glow-border">
+                                <span
+                                    class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline text-lg">alternate_email</span>
+                                <input
+                                    class="w-full bg-surface-container-lowest border-none rounded-xl py-4 pl-12 pr-4 text-sm text-white placeholder:text-outline/50 focus:ring-1 focus:ring-primary focus:bg-surface-container transition-all"
+                                    placeholder="name@agency.com" type="email" />
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-center px-1">
+                                <label
+                                    class="font-headline font-bold text-[10px] tracking-[0.15em] text-on-surface-variant uppercase">Access
+                                    Key (Password)</label>
+                                <a class="font-headline font-bold text-[9px] tracking-widest text-primary uppercase hover:opacity-80"
+                                    href="#">Recovery</a>
+                            </div>
+                            <div class="relative glow-border">
+                                <span
+                                    class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline text-lg">lock</span>
+                                <input
+                                    class="w-full bg-surface-container-lowest border-none rounded-xl py-4 pl-12 pr-4 text-sm text-white placeholder:text-outline/50 focus:ring-1 focus:ring-primary focus:bg-surface-container transition-all"
+                                    placeholder="••••••••••••" type="password" />
+                                <button
+                                    class="absolute right-4 top-1/2 -translate-y-1/2 text-outline hover:text-white transition-colors"
+                                    type="button">
+                                    <span class="material-symbols-outlined text-lg">visibility</span>
+                                </button>
+                            </div>
+                        </div>
+                        <button
+                            class="w-full py-4 bg-gradient-to-tr from-primary to-primary-container text-on-primary font-headline font-black text-xs tracking-[0.2em] uppercase rounded-xl hover:shadow-[0_0_30px_rgba(66,239,131,0.3)] transition-all duration-500 transform hover:-translate-y-0.5 active:scale-95"
+                            type="submit">
+                            Initialize Session
+                        </button>
+                    </form>
+                    <div class="text-center pt-4">
+                        <p class="font-body font-light text-xs text-on-surface-variant">
+                            New operative?
+                            <a class="font-headline font-bold text-primary hover:underline ml-1" href="#">Establish
+                                Account</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Footer Suppression Check: Minimal branding for Auth -->
+        <footer
+            class="absolute bottom-8 left-1/2 -translate-x-1/2 w-full max-w-md px-6 flex justify-between items-center">
+            <span class="font-headline font-light text-[9px] text-outline uppercase tracking-widest">© 2024 D1A
+                Agency</span>
+            <div class="flex gap-4">
+                <a class="font-headline font-light text-[9px] text-outline uppercase tracking-widest hover:text-white"
+                    href="#">Security</a>
+                <a class="font-headline font-light text-[9px] text-outline uppercase tracking-widest hover:text-white"
+                    href="#">API</a>
+            </div>
+        </footer>
+    </main>
+</body>
+
+</html>
